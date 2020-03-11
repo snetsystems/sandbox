@@ -59,7 +59,9 @@ services:
       - influxdb
     ports:
       # The API for Kapacitor is served on port 9092
-      - "9092:9092"
+      # To avoid collision against Kafka port
+      #- "9092:9092"
+      - "9094:9092"
 
   # chronograf:
   #   # Full tag list: https://hub.docker.com/r/library/chronograf/tags/
