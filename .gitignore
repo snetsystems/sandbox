@@ -1,3 +1,4 @@
-chronograf/data/
+cloudhub/data/
 influxdb/data/
 kapacitor/data/
+etcd/data/

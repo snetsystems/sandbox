@@ -26,8 +26,12 @@ sandbox () {
         echo "Entering /bin/bash session in the kapacitor container..."
         docker-compose exec kapacitor /bin/bash
         ;;
+      etcd)
+        echo "Entering /bin/sh session in the etcd container..."
+        docker-compose exec etcd /bin/sh
+        ;;
       *)
-        echo "sandbox enter (influxdb||kapacitor)"
+        echo "sandbox enter (influxdb||kapacitor||etcd)"
         ;;
     esac
   }
@@ -43,8 +47,12 @@ sandbox () {
         echo "Following the logs from the kapacitor container..."
         docker-compose logs -f kapacitor
         ;;
+      etcd)
+        echo "Following the logs from the etcd container..."
+        docker-compose logs -f etcd
+        ;;
       *)
-        echo "sandbox logs (influxdb||kapacitor)"
+        echo "sandbox logs (influxdb||kapacitor||etcd)"
         ;;
     esac
   }
@@ -78,14 +86,14 @@ sandbox () {
       echo "Services available!"
       ;;
     delete-data)
-      echo "deleting all influxdb, kapacitor data..."
-      rm -rf kapacitor/data influxdb/data
+      echo "deleting all influxdb, kapacitor, etcd data..."
+      rm -rf kapacitor/data influxdb/data etcd/data
       ;;
     docker-clean)
       echo "Stopping and removing running sandbox containers..."
       docker-compose down
       echo "Removing influxdb and kapacitor images..."
-      docker rmi influxdb:latest kapacitor:latest > /dev/null 2>&1
+      docker rmi influxdb:latest kapacitor:latest etcd:latest > /dev/null 2>&1
       docker rmi $(docker images -f "dangling=true" -q)
       ;;
     influxdb)
@@ -111,10 +119,10 @@ sandbox commands:
   influxdb -> attach to the influx cli
   flux     -> attach to the flux REPL
 
-  enter (influxdb||kapacitor) -> enter the specified container
-  logs  (influxdb||kapacitor) -> stream logs for the specified container
+  enter (influxdb||kapacitor||etcd) -> enter the specified container
+  logs  (influxdb||kapacitor||etcd) -> stream logs for the specified container
 
-  delete-data  -> delete all data created by the influxdb and kapacitor
+  delete-data  -> delete all data created by the influxdb and kapacitor and etcd
   docker-clean -> stop and remove all running docker containers and images
 EOF
       ;;
