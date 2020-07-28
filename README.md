@@ -15,9 +15,9 @@ sandbox commands:
   influxdb -> attach to the influx cli
   flux     -> attach to the flux REPL
 
-  enter (influxdb||kapacitor) -> enter the specified container
-  logs  (influxdb||kapacitor) -> stream logs for the specified container
+  enter (influxdb||kapacitor||etcd) -> enter the specified container
+  logs  (influxdb||kapacitor||etcd) -> stream logs for the specified container
 
-  delete-data  -> delete all data created by the influxdb and kapacitor
+  delete-data  -> delete all data created by the influxdb and kapacitor and etcd
   docker-clean -> stop and remove all running docker containers and images
 ```
