@@ -50,20 +50,22 @@ services:
     environment:
       - ETCDCTL_API=3
     command:
-      - '--name=etcd'
+      - '--name=etcd1'
       - '--data-dir=/var/lib/etcd'
-      - '--initial-advertise-peer-urls=http://etcd:2380'
+      - '--initial-advertise-peer-urls=http://<etcd-1>:2380'
       - '--listen-peer-urls=http://0.0.0.0:2380'
       - '--listen-client-urls=http://0.0.0.0:2379'
-      - '--advertise-client-urls=http://etcd:2379'
+      - '--advertise-client-urls=http://<etcd-1>:2379'
       - '--initial-cluster-token=etcd-cluster-token'
-      - '--initial-cluster=etcd=http://etcd:2380'
+      - '--initial-cluster=etcd1=http://<etcd-1>:2380,etcd2=http://<etcd-2>:2380,etcd3=http://<etcd-3>:2380'
       - '--initial-cluster-state=new'
       - '--auto-tls'
       - '--peer-auto-tls'
     volumes:
       # Mount for etcd data directory
       - ./etcd/data:/var/lib/etcd
+      # Mount for sharing Host domains
+      - /etc/hosts:/etc/hosts
     ports:
       # The API for etcd is served on port
       - '2379:2379'
