@@ -57,6 +57,39 @@ sandbox () {
     esac
   }
 
+  # Install creates and enables a service file
+  install () {
+    if [ -z "$2" ]; then
+      echo "Error: No working directory specified." >&2
+      exit 1
+    fi
+
+    local servicePath="/etc/systemd/system/snet-sandbox.service"
+    echo "Creating service file at $servicePath..."
+
+    cat << EOF > "$servicePath"
+[Unit]
+Description=Snet Sandbox Service
+After=network-online.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=$2
+ExecStart=/usr/local/bin/docker-compose up -d
+
+KillMode=control-group
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    systemctl enable snet-sandbox
+    systemctl start snet-sandbox
+    echo "Snet Sandbox Service has been enabled and started."
+  }
+
   case $1 in
     up)
       echo "Spinning up Docker Images..."
@@ -110,6 +143,9 @@ sandbox () {
     logs)
       logs $@
       ;;
+    install)
+      install "$@"
+      ;;
     *)
       cat <<-EOF
 sandbox commands:
@@ -121,7 +157,8 @@ sandbox commands:
 
   enter (influxdb||kapacitor||etcd) -> enter the specified container
   logs  (influxdb||kapacitor||etcd) -> stream logs for the specified container
-
+  install <Directory path where docker-compose.yml is located> -> create and enable a system service for the sandbox environment. 
+  
   delete-data  -> delete all data created by the influxdb and kapacitor and etcd
   docker-clean -> stop and remove all running docker containers and images
 EOF
