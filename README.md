@@ -17,7 +17,8 @@ sandbox commands:
 
   enter (influxdb||kapacitor||etcd) -> enter the specified container
   logs  (influxdb||kapacitor||etcd) -> stream logs for the specified container
-
+  install <Directory path where docker-compose.yml is located> -> create and enable a system service for the sandbox environment. 
+  
   delete-data  -> delete all data created by the influxdb and kapacitor and etcd
   docker-clean -> stop and remove all running docker containers and images
 ```
