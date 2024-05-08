@@ -1,0 +1,53 @@
+---
+## Default Logstash configuration from Logstash base image.
+## https://github.com/elastic/logstash/blob/master/docker/data/logstash/config/logstash-full.yml
+#
+http.host: "0.0.0.0"
+#xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+# ------------ Pipeline Settings --------------
+#
+# The ID of the pipeline.
+#
+# pipeline.id: main
+
+
+# Set the number of workers that will, in parallel, execute the filters+outputs
+# stage of the pipeline.
+#
+# This defaults to the number of the host's CPU cores.
+# pipeline.workers: 16
+#
+# How many events to retrieve from inputs before sending to filters+workers
+#
+# pipeline.batch.size: 125
+#
+# How long to wait in milliseconds while polling for the next event
+# before dispatching an undersized batch to filters+outputs
+#
+# pipeline.batch.delay: 50
+#
+# Force Logstash to exit during shutdown even if there are still inflight
+# events in memory. By default, logstash will refuse to quit until all
+# received events have been pushed to the outputs.
+#
+# WARNING: Enabling this can lead to data loss during shutdown
+#
+# pipeline.unsafe_shutdown: false
+#
+# Set the pipeline event ordering. Options are "auto" (the default), "true" or "false".
+# "auto" automatically enables ordering if the 'pipeline.workers' setting
+# is also set to '1', and disables otherwise.
+# "true" enforces ordering on the pipeline and prevent logstash from starting
+# if there are multiple workers.
+# "false" disables any extra processing necessary for preserving ordering.
+#
+# pipeline.ordered: auto
+
+
+
+
+## X-Pack security credentials
+#
+xpack.monitoring.enabled: false
+#xpack.monitoring.elasticsearch.username: elastic
+#xpack.monitoring.elasticsearch.password: changeme

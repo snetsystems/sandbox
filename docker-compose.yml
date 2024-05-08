@@ -1,13 +1,13 @@
-version: '3'
+version: '3.2'
 services:
   influxdb:
+    image: ch/influxdb:${INFLUXDB_TAG}
     # Full tag list: https://hub.docker.com/r/library/influxdb/tags/
     build:
       context: ./images/influxdb/
       dockerfile: ./Dockerfile
       args:
         INFLUXDB_TAG: ${INFLUXDB_TAG}
-    image: 'influxdb'
     volumes:
       # Mount for influxdb data directory
       - ./influxdb/data:/var/lib/influxdb
@@ -21,13 +21,13 @@ services:
       - '8089:8089/udp'
 
   kapacitor:
+    image: ch/kapacitor:${KAPACITOR_TAG}
     # Full tag list: https://hub.docker.com/r/library/kapacitor/tags/
     build:
       context: ./images/kapacitor/
       dockerfile: ./Dockerfile
       args:
         KAPACITOR_TAG: ${KAPACITOR_TAG}
-    image: 'kapacitor'
     volumes:
       # Mount for kapacitor data directory
       - ./kapacitor/data/:/var/lib/kapacitor
@@ -41,6 +41,34 @@ services:
       # To avoid collision against Kafka port
       #- "9092:9092"
       - '9094:9092'
+    depends_on:
+      - influxdb
+
+  logstash:
+    image: ch/logstash:${ELK_TAG}
+    build:
+      context: ./logstash/
+      dockerfile: ./Dockerfile
+      args:
+        ELK_TAG: $ELK_TAG
+    volumes:
+      - type: bind
+        source: ./logstash/config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ./logstash/pipeline
+        target: /usr/share/logstash/pipeline
+        read_only: true
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx1g -Xms1g"
+    depends_on:
+      - influxdb
 
   etcd:
     # Full tag list: quay.io/coreos/etcd:v3.3.11

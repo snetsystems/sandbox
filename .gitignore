@@ -2,3 +2,4 @@ cloudhub/data/
 influxdb/data/
 kapacitor/data/
 etcd/data/
+logstash/pipeline/logstash.conf
