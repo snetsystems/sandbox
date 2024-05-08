@@ -26,12 +26,16 @@ sandbox () {
         echo "Entering /bin/bash session in the kapacitor container..."
         docker-compose exec kapacitor /bin/bash
         ;;
+      logstash)
+        echo "Entering /bin/sh session in the logstash container..."
+        docker-compose exec logstash /bin/bash
+        ;;
       etcd)
         echo "Entering /bin/sh session in the etcd container..."
         docker-compose exec etcd /bin/sh
         ;;
       *)
-        echo "sandbox enter (influxdb||kapacitor||etcd)"
+        echo "sandbox enter (influxdb||kapacitor||logstash||etcd)"
         ;;
     esac
   }
@@ -47,12 +51,16 @@ sandbox () {
         echo "Following the logs from the kapacitor container..."
         docker-compose logs -f kapacitor
         ;;
+      logstash)
+        echo "Following the logs from the logstash container..."
+        docker-compose logs -f logstash
+        ;;
       etcd)
         echo "Following the logs from the etcd container..."
         docker-compose logs -f etcd
         ;;
       *)
-        echo "sandbox logs (influxdb||kapacitor||etcd)"
+        docker-compose logs -f
         ;;
     esac
   }
@@ -126,8 +134,9 @@ EOF
       echo "Stopping and removing running sandbox containers..."
       docker-compose down
       echo "Removing influxdb and kapacitor images..."
-      docker rmi influxdb:latest kapacitor:latest etcd:latest > /dev/null 2>&1
+      docker rmi ch/influxdb:$INFLUXDB_TAG ch/kapacitor:$KAPACITOR_TAG ch/logstash:$ELK_TAG quay.io/coreos/etcd:$ETCD_TAG > /dev/null 2>&1
       docker rmi $(docker images -f "dangling=true" -q)
+      docker images
       ;;
     influxdb)
       echo "Entering the influx cli..."
@@ -156,7 +165,7 @@ sandbox commands:
   flux     -> attach to the flux REPL
 
   enter (influxdb||kapacitor||etcd) -> enter the specified container
-  logs  (influxdb||kapacitor||etcd) -> stream logs for the specified container
+  logs  (influxdb||kapacitor||etcd) -> stream logs for the specified container or all
   install <Directory path where docker-compose.yml is located> -> create and enable a system service for the sandbox environment. 
   
   delete-data  -> delete all data created by the influxdb and kapacitor and etcd

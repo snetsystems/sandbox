@@ -7,7 +7,8 @@ This repo is a quick way to get the InfluxDB and Kapacitor Stack spun up and wor
 To run the `sandbox`, simply use the convenient cli:
 
 ```bash
-$ ./sandbox
+$ ./sandbox1 # if docker-compose <= version1
+$ ./sandbox2 # if docker-compose-v2 <= version2
 sandbox commands:
   up       -> spin up the sandbox environment
   down     -> tear down the sandbox environment
