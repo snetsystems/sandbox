@@ -16,8 +16,8 @@ sandbox commands:
   influxdb -> attach to the influx cli
   flux     -> attach to the flux REPL
 
-  enter (influxdb||kapacitor||etcd) -> enter the specified container
-  logs  (influxdb||kapacitor||etcd) -> stream logs for the specified container
+  enter (influxdb||kapacitor||logstash||etcd) -> enter the specified container
+  logs  (influxdb||kapacitor||logstash||etcd) -> stream logs for the specified container or all
   install <Directory path where docker-compose.yml is located> -> create and enable a system service for the sandbox environment. 
   
   delete-data  -> delete all data created by the influxdb and kapacitor and etcd
