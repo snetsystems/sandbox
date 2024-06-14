@@ -60,6 +60,9 @@ services:
         source: ./logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
+      - type: bind
+        source: ./logstash/logs
+        target: /usr/share/logstash/logs
     ports:
       - "5044:5044"
       - "5000:5000/tcp"
@@ -80,12 +83,12 @@ services:
     command:
       - '--name=etcd1'
       - '--data-dir=/var/lib/etcd'
-      - '--initial-advertise-peer-urls=http://<etcd-1>:2380'
+      - '--initial-advertise-peer-urls=http://etcd:2380'
       - '--listen-peer-urls=http://0.0.0.0:2380'
       - '--listen-client-urls=http://0.0.0.0:2379'
-      - '--advertise-client-urls=http://<etcd-1>:2379'
+      - '--advertise-client-urls=http://etcd:2379'
       - '--initial-cluster-token=etcd-cluster-token'
-      - '--initial-cluster=etcd1=http://<etcd-1>:2380,etcd2=http://<etcd-2>:2380,etcd3=http://<etcd-3>:2380'
+      - '--initial-cluster=etcd1=http://etcd:2380'
       - '--initial-cluster-state=new'
       - '--auto-tls'
       - '--peer-auto-tls'
