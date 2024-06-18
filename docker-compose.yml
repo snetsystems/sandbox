@@ -90,6 +90,7 @@ services:
       - '--initial-cluster-token=etcd-cluster-token'
       - '--initial-cluster=etcd1=http://etcd:2380'
       - '--initial-cluster-state=new'
+      - '--max-request-bytes=10485760' # 10 MBytes
       - '--auto-tls'
       - '--peer-auto-tls'
     volumes:
