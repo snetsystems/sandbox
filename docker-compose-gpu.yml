@@ -25,9 +25,17 @@ services:
     # Full tag list: https://hub.docker.com/r/library/kapacitor/tags/
     build:
       context: ./images/kapacitor/
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile-gpu
       args:
         KAPACITOR_TAG: ${KAPACITOR_TAG}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              # count: all
+              device_ids: ['2','3']
+              capabilities: [gpu]
     volumes:
       # Mount for kapacitor data directory
       - ./kapacitor/data/:/var/lib/kapacitor
