@@ -4,3 +4,4 @@ kapacitor/data/
 etcd/data/
 logstash/pipeline/
 logstash/logs/
+*.log

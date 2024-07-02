@@ -41,6 +41,8 @@ services:
       - ./kapacitor/data/:/var/lib/kapacitor
       # Mount for kapacitor configuration
       - ./kapacitor/config/:/etc/kapacitor
+      # Mount for ai module logs
+      - ./kapacitor/logs/:/var/log/kapacitor-ai
       # Mount for ch-ai src path
       - ../ch-ai/src/:/opt/cloudhub/ch-ai-src
       # Mount for conda env path
