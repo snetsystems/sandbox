@@ -68,9 +68,9 @@ services:
         source: ./logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
-      # - type: bind
-      #   source: ./logstash/logs
-      #   target: /usr/share/logstash/logs
+      - type: bind
+        source: ./logstash/logs
+        target: /usr/share/logstash/logs
     ports:
       - "5044:5044"
       - "5000:5000/tcp"
