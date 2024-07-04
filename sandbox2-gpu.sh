@@ -15,6 +15,56 @@ fi
 sandbox () {
   source .env
 
+  up () {
+    case $2 in
+      influxdb)
+        echo "Up the influxdb container..."
+        docker compose -f docker-compose-gpu.yml up -d --build influxdb
+        ;;
+      kapacitor)
+        echo "Up the kapacitor container..."
+        docker compose -f docker-compose-gpu.yml up -d --build kapacitor
+        ;;
+      logstash)
+        echo "Up the logstash container..."
+        docker compose -f docker-compose-gpu.yml up -d --build logstash
+        ;;
+      etcd)
+        echo "Up the etcd container..."
+        docker compose -f docker-compose-gpu.yml up -d --build etcd
+        ;;
+      *)
+        echo "Up all containers..."
+        docker compose -f docker-compose-gpu.yml up -d --build
+        ;;
+    esac
+  }
+
+  down () {
+    case $2 in
+      influxdb)
+        echo "Down the influxdb container..."
+        docker compose -f docker-compose-gpu.yml down influxdb
+        ;;
+      kapacitor)
+        echo "Down the kapacitor container..."
+        docker compose -f docker-compose-gpu.yml down kapacitor
+        ;;
+      logstash)
+        echo "Down the logstash container..."
+        docker compose -f docker-compose-gpu.yml down logstash
+        ;;
+      etcd)
+        echo "Down the etcd container..."
+        docker compose -f docker-compose-gpu.yml down etcd
+        ;;
+      *)
+        echo "Down all containers..."
+        docker compose -f docker-compose-gpu.yml down
+        ;;
+    esac
+  }
+
   # Enter attaches users to a shell in the desired container
   enter () {
     case $2 in
@@ -45,25 +95,29 @@ sandbox () {
     case $2 in
       influxdb)
         echo "Following the logs from the influxdb container..."
-        docker compose -f docker-compose-gpu.yml logs -f influxdb
+        docker compose -f docker-compose-gpu.yml logs -f --tail $3 influxdb
         ;;
       kapacitor)
         echo "Following the logs from the kapacitor container..."
-        docker compose -f docker-compose-gpu.yml logs -f kapacitor
+        docker compose -f docker-compose-gpu.yml logs -f --tail $3 kapacitor
         ;;
       logstash)
         echo "Following the logs from the logstash container..."
-        docker compose -f docker-compose-gpu.yml logs -f logstash
+        docker compose -f docker-compose-gpu.yml logs -f --tail $3 logstash
         ;;
       etcd)
         echo "Following the logs from the etcd container..."
-        docker compose -f docker-compose-gpu.yml logs -f etcd
+        docker compose -f docker-compose-gpu.yml logs -f --tail $3 etcd
+        ;;
+      all)
+        docker compose -f docker-compose-gpu.yml logs -f --tail $3
         ;;
       *)
-        docker compose -f docker-compose-gpu.yml logs -f
+        echo "sandbox2.sh logs (influxdb||kapacitor||logstash||etcd||all) [preview counts]"
         ;;
     esac
   }
+
 
   # Install creates and enables a service file
   install () {
@@ -100,31 +154,14 @@ EOF
 
   case $1 in
     up)
-      echo "Spinning up Docker Images..."
-      echo "If this is your first time starting sandbox this might take a minute..."
-      docker compose -f docker-compose-gpu.yml up -d --build
-      echo "Opening tabs in browser..."
-      sleep 3
-      if [ $(uname) == "Darwin" ]; then
-        open http://localhost:3010
-        open http://localhost:8888
-      elif [ $(uname) == "Linux" ]; then
-        xdg-open http://localhost:8888
-        xdg-open http://localhost:3010
-      else
-        echo "no browser detected..."
-      fi
+      up $@
       ;;
     down)
-      echo "Stopping sandbox containers..."
-      docker compose -f docker-compose-gpu.yml down
+      down $@
       ;;
     restart)
-      echo "Stopping all sandbox processes..."
-      docker compose -f docker-compose-gpu.yml down > /dev/null 2>&1
-      echo "Starting all sandbox processes..."
-      docker compose -f docker-compose-gpu.yml up -d --build > /dev/null 2>&1
-      echo "Services available!"
+      down $@
+      up $@
       ;;
     delete-data)
       echo "deleting all influxdb, kapacitor, etcd data..."
