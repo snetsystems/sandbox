@@ -5,3 +5,4 @@ etcd/data/
 logstash/pipeline/
 logstash/logs/
 *.log
+*.log.*
