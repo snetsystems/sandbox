@@ -160,8 +160,7 @@ EOF
       down $@
       ;;
     restart)
-      down $@
-      up $@
+      docker compose -f docker-compose-gpu.yml restart $2
       ;;
     delete-data)
       echo "deleting all influxdb, kapacitor, etcd data..."

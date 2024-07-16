@@ -159,8 +159,7 @@ EOF
       down $@
       ;;
     restart)
-      down $@
-      up $@
+      docker compose restart $2
       ;;
     delete-data)
       echo "deleting all influxdb, kapacitor, etcd data..."
