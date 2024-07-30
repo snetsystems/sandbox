@@ -126,7 +126,7 @@ sandbox () {
       exit 1
     fi
 
-    local servicePath="/etc/systemd/system/snet-sandbox.service"
+    local servicePath="/usr/lib/systemd/system/snet-sandbox.service"
     echo "Creating service file at $servicePath..."
 
     cat << EOF > "$servicePath"
@@ -148,11 +148,13 @@ WantedBy=multi-user.target
 EOF
 
     systemctl enable snet-sandbox
-    systemctl start snet-sandbox
     echo "Snet Sandbox Service has been enabled and started."
   }
 
   case $1 in
+    ps)
+      docker compose -f docker-compose-gpu.yml ps
+      ;;
     up)
       up $@
       ;;
