@@ -36,6 +36,8 @@ services:
               # count: all
               device_ids: ['2','3']
               capabilities: [gpu]
+    environment:
+      - TF_FORCE_GPU_ALLOW_GROWTH=true
     volumes:
       # Mount for kapacitor data directory
       - ./kapacitor/data/:/var/lib/kapacitor
