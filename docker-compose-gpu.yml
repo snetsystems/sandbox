@@ -19,6 +19,8 @@ services:
       - '8082:8082'
       # UDP Port
       - '8089:8089/udp'
+    networks:
+      - ch
 
   kapacitor:
     image: ch/kapacitor:${KAPACITOR_TAG}
@@ -61,6 +63,8 @@ services:
       - '9094:9092'
     depends_on:
       - influxdb
+    networks:
+      - ch
 
   logstash:
     image: ch/logstash:${ELK_TAG}
@@ -90,6 +94,8 @@ services:
       LS_JAVA_OPTS: "-Xmx1g -Xms1g"
     depends_on:
       - influxdb
+    networks:
+      - ch
 
   etcd:
     # Full tag list: quay.io/coreos/etcd:v3.3.11
@@ -120,3 +126,13 @@ services:
       # The API for etcd is served on port
       - '2379:2379'
       - '2380:2380'
+    networks:
+      - ch
+
+networks:
+  ch:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.10.0.0/16
+          gateway: 172.10.0.1
