@@ -52,7 +52,7 @@ services:
       # Mount for ch-ai src path
       - ../ch-ai/src/:/opt/cloudhub/ch-ai-src
       # Mount for conda env path
-      - /data/jack/miniconda3/envs/cloudhub/:/opt/cloudhub
+      - ${CONDA_ENV_PATH}:/opt/cloudhub
     # Kapacitor requires network access to Influxdb
     links:
       - influxdb

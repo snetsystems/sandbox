@@ -42,7 +42,7 @@ services:
       # Mount for ch-ai src path
       - ../ch-ai/src/:/opt/cloudhub/ch-ai-src
       # Mount for conda env path
-      - /data/jack/miniconda3/envs/cloudhub/:/opt/cloudhub
+      - ${CONDA_ENV_PATH}:/opt/cloudhub
     # Kapacitor requires network access to Influxdb
     links:
       - influxdb
@@ -95,14 +95,14 @@ services:
     environment:
       - ETCDCTL_API=3
     command:
-      - '--name=etcd1'
+      - '--name=${ETCD_NAME}'
       - '--data-dir=/var/lib/etcd'
-      - '--initial-advertise-peer-urls=http://etcd:2380'
-      - '--listen-peer-urls=http://0.0.0.0:2380'
-      - '--listen-client-urls=http://0.0.0.0:2379'
-      - '--advertise-client-urls=http://etcd:2379'
+      - '--initial-advertise-peer-urls=${ETCD_INITIAL_ADVERTISE_PEER_URLS}'
+      - '--listen-peer-urls=${ETCD_LISTEN_PEER_URLS}'
+      - '--listen-client-urls=${ETCD_LISTEN_CLIENT_URLS}'
+      - '--advertise-client-urls=${ETCD_ADVERTISE_CLIENT_URLS}'
       - '--initial-cluster-token=etcd-cluster-token'
-      - '--initial-cluster=etcd1=http://etcd:2380'
+      - '--initial-cluster=${ETCD_INITIAL_CLUSTER}'
       - '--initial-cluster-state=new'
       - '--max-request-bytes=10485760' # 10 MBytes
       - '--quota-backend-bytes=8589934592' # 8 GBytes

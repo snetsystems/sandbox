@@ -14,28 +14,32 @@ fi
 
 sandbox () {
   source .env
+  BUILD_OPTION="--build"
 
+  if [ "$OFFLINE_MODE" == "on" ]; then
+    BUILD_OPTION=""
+  fi
   up () {
     case $2 in
       influxdb)
         echo "Up the influxdb container..."
-        docker-compose up -d --build influxdb
+        docker-compose up -d $BUILD_OPTION influxdb
         ;;
       kapacitor)
         echo "Up the kapacitor container..."
-        docker-compose up -d --build kapacitor
+        docker-compose up -d $BUILD_OPTION kapacitor
         ;;
       logstash)
         echo "Up the logstash container..."
-        docker-compose up -d --build logstash
+        docker-compose up -d $BUILD_OPTION logstash
         ;;
       etcd)
         echo "Up the etcd container..."
-        docker-compose up -d --build etcd
+        docker-compose up -d $BUILD_OPTION etcd
         ;;
       *)
         echo "Up all containers..."
-        docker-compose up -d --build
+        docker-compose up -d $BUILD_OPTION
         ;;
     esac
   }
@@ -137,7 +141,7 @@ After=network-online.target
 User=root
 Group=root
 WorkingDirectory=$2
-ExecStart=/usr/local/bin/docker-compose up -d
+ExecStart=$EXEC_START_PATH/docker-compose up -d
 
 KillMode=control-group
 Restart=on-failure
