@@ -18,7 +18,7 @@ sandbox () {
   up () {
     BUILD_OPTION="--build"
 
-    if [ "$OFFLINE_MODE" == "on" ]; then
+    if [ "$ONLINE_MODE" == "off" ]; then
       BUILD_OPTION=""
     fi
 
