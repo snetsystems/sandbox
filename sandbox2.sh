@@ -131,14 +131,12 @@ sandbox () {
     cat << EOF > "$servicePath"
 [Unit]
 Description=Snet Sandbox Service
-After=network-online.target
+Requires=docker.service
+After=docker.service
 
 [Service]
-User=root
-Group=root
 WorkingDirectory=$2
-ExecStart=/usr/local/bin/docker compose up -d
-
+ExecStart=/usr/bin/docker compose up -d
 KillMode=control-group
 Restart=on-failure
 

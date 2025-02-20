@@ -33,6 +33,10 @@ sandbox () {
         echo "Up the etcd container..."
         docker compose -f docker-compose-gpu.yml up -d --build etcd
         ;;
+      dcgm-exporter)
+        echo "Up the dcgm-exporter container..."
+        docker compose -f docker-compose-gpu.yml up -d --build dcgm-exporter
+        ;;
       *)
         echo "Up all containers..."
         docker compose -f docker-compose-gpu.yml up -d --build
@@ -57,6 +61,10 @@ sandbox () {
       etcd)
         echo "Down the etcd container..."
         docker compose -f docker-compose-gpu.yml down etcd
+        ;;
+      dcgm-exporter)
+        echo "Up the dcgm-exporter container..."
+        docker compose -f docker-compose-gpu.yml down dcgm-exporter
         ;;
       *)
         echo "Down all containers..."
@@ -84,8 +92,12 @@ sandbox () {
         echo "Entering /bin/sh session in the etcd container..."
         docker compose -f docker-compose-gpu.yml exec etcd /bin/sh
         ;;
+      dcgm-exporter)
+        echo "Entering /bin/sh session in the dcgm-exporter container..."
+        docker compose -f docker-compose-gpu.yml exec dcgm-exporter /bin/bash
+        ;;
       *)
-        echo "sandbox enter (influxdb||kapacitor||logstash||etcd)"
+        echo "sandbox enter (influxdb||kapacitor||logstash||etcd||dcgm-exporter)"
         ;;
     esac
   }
@@ -108,6 +120,10 @@ sandbox () {
       etcd)
         echo "Following the logs from the etcd container..."
         docker compose -f docker-compose-gpu.yml logs -f --tail $3 etcd
+        ;;
+      dcgm-exporter)
+        echo "Following the logs from the dcgm-exporter container..."
+        docker compose -f docker-compose-gpu.yml logs -f --tail $3 dcgm-exporter
         ;;
       all)
         docker compose -f docker-compose-gpu.yml logs -f --tail $3
@@ -132,14 +148,12 @@ sandbox () {
     cat << EOF > "$servicePath"
 [Unit]
 Description=Snet Sandbox Service
-After=network-online.target
+Requires=docker.service
+After=docker.service
 
 [Service]
-User=root
-Group=root
 WorkingDirectory=$2
-ExecStart=/usr/local/bin/docker compose -f docker-compose-gpu.yml up -d
-
+ExecStart=/usr/bin/docker compose -f docker-compose-gpu.yml up -d
 KillMode=control-group
 Restart=on-failure
 

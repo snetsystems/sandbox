@@ -21,6 +21,7 @@ services:
       - '8089:8089/udp'
     networks:
       - ch
+    restart: always
 
   kapacitor:
     image: ch/kapacitor:${KAPACITOR_TAG}
@@ -55,6 +56,7 @@ services:
       - influxdb
     networks:
       - ch
+    restart: always
 
   logstash:
     image: ch/logstash:${ELK_TAG}
@@ -86,6 +88,7 @@ services:
       - influxdb
     networks:
       - ch
+    restart: always
 
   etcd:
     # Full tag list: quay.io/coreos/etcd:v3.3.11
@@ -120,6 +123,7 @@ services:
       - '2380:2380'
     networks:
       - ch
+    restart: always
 
 networks:
   ch:

@@ -20,7 +20,8 @@ services:
       # UDP Port
       - '8089:8089/udp'
     networks:
-      - ch
+      - brg
+    restart: always
 
   kapacitor:
     image: ch/kapacitor:${KAPACITOR_TAG}
@@ -32,13 +33,18 @@ services:
         KAPACITOR_TAG: ${KAPACITOR_TAG}
     deploy:
       resources:
+        # reservations:
+        #   devices:
+        #     - driver: nvidia
+        #       # count: all
+        #       device_ids: ['2','3']
+        #       capabilities: [gpu]
         reservations:
           devices:
-            - driver: nvidia
-              # count: all
-              device_ids: ['2','3']
-              capabilities: [gpu]
+            - capabilities: [gpu]
     environment:
+      - NVIDIA_VISIBLE_DEVICES=MIG-9ddf4c52-5275-52a0-8960-df3a71dbff79
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - TF_FORCE_GPU_ALLOW_GROWTH=true
     volumes:
       # Mount for kapacitor data directory
@@ -64,7 +70,8 @@ services:
     depends_on:
       - influxdb
     networks:
-      - ch
+      - brg
+    restart: always
 
   logstash:
     image: ch/logstash:${ELK_TAG}
@@ -95,7 +102,8 @@ services:
     depends_on:
       - influxdb
     networks:
-      - ch
+      - brg
+    restart: always
 
   etcd:
     # Full tag list: quay.io/coreos/etcd:v3.3.11
@@ -129,10 +137,31 @@ services:
       - '2379:2379'
       - '2380:2380'
     networks:
-      - ch
+      - brg
+    restart: always
+
+  dcgm-exporter:
+    image: nvidia/dcgm-exporter:${DCGM_EXPORTER_TAG}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    hostname: ${HOSTNAME}
+    ports:
+      - "9400:9400"
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      - ./dcgm-exporter/etc/:/etc/dcgm-exporter
+    networks:
+      - brg
+    restart: always
 
 networks:
-  ch:
+  brg:
     driver: bridge
     ipam:
       config:
