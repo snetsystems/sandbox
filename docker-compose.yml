@@ -20,7 +20,7 @@ services:
       # UDP Port
       - '8089:8089/udp'
     networks:
-      - ch
+      - brg
     restart: always
 
   kapacitor:
@@ -55,7 +55,7 @@ services:
     depends_on:
       - influxdb
     networks:
-      - ch
+      - brg
     restart: always
 
   logstash:
@@ -87,7 +87,7 @@ services:
     depends_on:
       - influxdb
     networks:
-      - ch
+      - brg
     restart: always
 
   etcd:
@@ -122,11 +122,11 @@ services:
       - '2379:2379'
       - '2380:2380'
     networks:
-      - ch
+      - brg
     restart: always
 
 networks:
-  ch:
+  brg:
     driver: bridge
     ipam:
       config:
