@@ -1,4 +1,4 @@
-version: '3.2'
+# version: '3.2'
 services:
   influxdb:
     image: ch/influxdb:${INFLUXDB_TAG}
@@ -20,7 +20,8 @@ services:
       # UDP Port
       - '8089:8089/udp'
     networks:
-      - ch
+      - brg
+    restart: always
 
   kapacitor:
     image: ch/kapacitor:${KAPACITOR_TAG}
@@ -32,13 +33,25 @@ services:
         KAPACITOR_TAG: ${KAPACITOR_TAG}
     deploy:
       resources:
+        # reservations:
+        #   devices:
+        #     - driver: nvidia
+        #       # count: all
+        #       device_ids: ['2','3']
+        #       capabilities: [gpu]
         reservations:
           devices:
             - driver: nvidia
-              # count: all
-              device_ids: ['2','3']
-              capabilities: [gpu]
+              device_ids:
+                - 'MIG-420ade32-9b96-5afe-957b-f0272e96d3df'
+                - 'MIG-e5f22f43-01fe-50ab-81fe-8ea23c6f0101'
+                - 'MIG-eeb2f7ce-7451-55e6-b2a4-e8191e4d1905'
+                - 'MIG-d40c7c07-2f08-5cb2-bb8d-147ae1013350'
+              capabilities:
+                - 'gpu'
     environment:
+      # - NVIDIA_VISIBLE_DEVICES=MIG-9ddf4c52-5275-52a0-8960-df3a71dbff79 # deprecated
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - TF_FORCE_GPU_ALLOW_GROWTH=true
     volumes:
       # Mount for kapacitor data directory
@@ -64,7 +77,8 @@ services:
     depends_on:
       - influxdb
     networks:
-      - ch
+      - brg
+    restart: always
 
   logstash:
     image: ch/logstash:${ELK_TAG}
@@ -95,7 +109,8 @@ services:
     depends_on:
       - influxdb
     networks:
-      - ch
+      - brg
+    restart: always
 
   etcd:
     # Full tag list: quay.io/coreos/etcd:v3.3.11
@@ -129,10 +144,31 @@ services:
       - '2379:2379'
       - '2380:2380'
     networks:
-      - ch
+      - brg
+    restart: always
+
+  dcgm-exporter:
+    image: nvidia/dcgm-exporter:${DCGM_EXPORTER_TAG}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    hostname: ${HOSTNAME}
+    ports:
+      - "9400:9400"
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      - ./dcgm-exporter/etc/:/etc/dcgm-exporter
+    networks:
+      - brg
+    restart: always
 
 networks:
-  ch:
+  brg:
     driver: bridge
     ipam:
       config:
