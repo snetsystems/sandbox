@@ -1,3 +1,5 @@
+# DEPRECATED: This file is deprecated and will be removed in a future version.
+# Use 'docker-compose.profiles.yml --profile cpu' instead.
 # version: '3.2'
 services:
   influxdb:
