@@ -72,13 +72,22 @@ services:
         KAPACITOR_TAG: ${KAPACITOR_TAG}
     deploy:
       resources:
-        #reservations:
+        # reservations:
         #   devices:
         #     - driver: nvidia
         #       # count: all
-        #       device_ids: ['0']
+        #       device_ids: ['2','3']
         #       capabilities: [gpu]
-
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids:
+                - 'MIG-420ade32-9b96-5afe-957b-f0272e96d3df'
+                - 'MIG-e5f22f43-01fe-50ab-81fe-8ea23c6f0101'
+                - 'MIG-eeb2f7ce-7451-55e6-b2a4-e8191e4d1905'
+                - 'MIG-d40c7c07-2f08-5cb2-bb8d-147ae1013350'
+              capabilities:
+                - 'gpu'
     environment:
       # - NVIDIA_VISIBLE_DEVICES=MIG-9ddf4c52-5275-52a0-8960-df3a71dbff79 # deprecated
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
@@ -147,7 +156,7 @@ services:
     restart: always
 
   etcd:
-    # Full tag list: quay.io/coreos/etcd:v3.3.11
+    # Use v3.5.x+ (v3.3.x uses deprecated Docker image format)
     #image: gcr.io/etcd-development/etcd:${ETCD_TAG}
     image: quay.io/coreos/etcd:${ETCD_TAG}
     entrypoint: /usr/local/bin/etcd

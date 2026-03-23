@@ -115,7 +115,7 @@ services:
     restart: always
 
   etcd:
-    # Full tag list: quay.io/coreos/etcd:v3.3.11
+    # Use v3.5.x+ (v3.3.x uses deprecated Docker image format)
     #image: gcr.io/etcd-development/etcd:${ETCD_TAG}
     image: quay.io/coreos/etcd:${ETCD_TAG}
     entrypoint: /usr/local/bin/etcd
