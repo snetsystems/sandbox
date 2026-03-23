@@ -2,6 +2,7 @@ cloudhub/data/
 influxdb/data/
 kapacitor/data/
 etcd/data/
+postgres/data/
 logstash/pipeline/
 logstash/logs/
 *.log

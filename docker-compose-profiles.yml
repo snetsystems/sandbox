@@ -212,6 +212,29 @@ services:
     profiles:
       - gpu
 
+  postgres:
+    image: postgres:${POSTGRES_TAG}
+    container_name: cloudhub-postgres
+    environment:
+      POSTGRES_USER: cloudhub
+      POSTGRES_PASSWORD: cloudhub
+      POSTGRES_DB: cloudhub
+    ports:
+      - "5432:5432"
+    volumes:
+      # Mount for postgres data directory
+      - ./postgres/data:/var/lib/postgresql/data
+      # Mount for postgres init scripts
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloudhub -d cloudhub"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - brg
+    restart: always
+
 networks:
   brg:
     driver: bridge
