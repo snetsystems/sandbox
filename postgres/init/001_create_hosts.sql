@@ -37,6 +37,9 @@ CREATE TABLE IF NOT EXISTS hosts (
 CREATE UNIQUE INDEX IF NOT EXISTS idx_hosts_minion_id_active
     ON hosts (minion_id) WHERE delete_yn = false;
 
+CREATE INDEX IF NOT EXISTS idx_hosts_hostname_active      
+      ON hosts (hostname) WHERE delete_yn = false;                                                                                                     
+
 CREATE INDEX IF NOT EXISTS idx_hosts_org_id ON hosts (org_id);
 
 -- host_ip_interfaces: network interfaces belonging to a host
